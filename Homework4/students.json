@@ -1,0 +1,44 @@
+
+{
+"students": [
+        {
+            "id": "18BD110504",
+            "full_name": "Ayana Luchshaya",
+            "faculty": "FIT",
+            "gpa": "3.5",
+            "age": 21,
+            "year": 4,
+            "gender": "female",
+            "social": {
+                "facebook": "https://facebook.com",
+                "twitter": "https://twitter.com"
+            }
+        },
+        {
+            "id": "18BD110504",
+            "full_name": "Aylin Krasavica",
+            "faculty": "FIT",
+            "gpa": "3.0",
+            "age": 21,
+            "year": 2,
+            "gender": "female",
+            "social": {
+                "facebook": "https://facebook.com",
+                "twitter": "https://twitter.com"
+            }
+        },
+        {
+            "id": "18BD110504",
+            "full_name": "Aysana Genious",
+            "faculty": "FIT",
+            "gpa": "4.0",
+            "age": 21,
+            "year": 1,
+            "gender": "female",
+            "social": {
+                "facebook": "https://facebook.com",
+                "twitter": "https://twitter.com"
+            }
+        }    
+    ]
+}        

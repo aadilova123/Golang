@@ -6,18 +6,22 @@ import (
 )
 
 type Store interface {
-	// Books() BooksRepository
-	Create(ctx context.Context, book *models.Book) error
-	All(ctx context.Context) ([]*models.Book, error)
-	ByID(ctx context.Context, id int) (*models.Book, error)
-	Update(ctx context.Context, book *models.Book) error
+	Books() BooksRepository
+	Authors() AuthorsRepository
+}
+
+type BooksRepository interface {
+	Create(ctx context.Context, book *models.Romance) error
+	All(ctx context.Context) ([]*models.Romance, error)
+	ByID(ctx context.Context, id int) (*models.Romance, error)
+	Update(ctx context.Context, book *models.Romance) error
 	Delete(ctx context.Context, id int) error
 }
 
-// type BooksRepository interface {
-// 	Create(ctx context.Context, book *models.Book) error
-// 	All(ctx context.Context) ([]*models.Book, error)
-// 	ByID(ctx context.Context, id string) (*models.Book, error)
-// 	Update(ctx context.Context, book *models.Book) error
-// 	Delete(ctx context.Context, id string) error
-// }
+type AuthorsRepository interface {
+	Create(ctx context.Context, author *models.Author) error
+	All(ctx context.Context) ([]*models.Author, error)
+	ByID(ctx context.Context, id int) (*models.Author, error)
+	Update(ctx context.Context, author *models.Author) error
+	Delete(ctx context.Context, id int) error
+}

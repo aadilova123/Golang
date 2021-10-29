@@ -1,0 +1,76 @@
+syntax = "proto3";
+
+package api;
+option go_package = "hw7/api";
+
+message Empty{}
+
+message Id{
+  int64 id = 1;
+}
+
+message User{
+  int64 id = 1;
+  string username = 2;
+  string email = 3;
+  string password = 4;
+  string firstname = 5;
+  string lastname = 6;
+}
+
+message Users{
+  repeated User users = 1;
+}
+
+service UserService{
+  rpc All(Empty) returns (Users);
+  rpc Get(Id) returns (User);
+  rpc Create(User) returns(Empty);
+  rpc Update(User) returns(Empty);
+  rpc Delete(Id) returns(Empty);
+}
+
+message Bag{
+  int64 id = 1;
+  string name = 2;
+  string series = 3;
+  string brand = 4;
+  string size = 5;
+  string color = 6;
+  float price = 7;
+  string material = 8;
+}
+
+message Bags{
+  repeated Bag bags = 1;
+}
+
+service BagService{
+  rpc All(Empty) returns (Bags);
+  rpc Get(Id) returns (Bag);
+  rpc Create(Bag) returns(Empty);
+  rpc Update(Bag) returns(Empty);
+  rpc Delete(Id) returns(Empty);
+}
+
+message Bracelet{
+  int64 id = 1;
+  string name = 2;
+  string brand = 3;
+  string color = 4;
+  string series = 6;
+  string material = 7;
+  float price = 8;
+}
+
+message Bracelets{
+  repeated Bracelet bracelets = 1;
+}
+
+service BraceletService{
+  rpc All(Empty) returns (Bracelets);
+  rpc Get(Id) returns (Bracelet);
+  rpc Create(Bracelet) returns(Empty);
+  rpc Update(Bracelet) returns(Empty);
+  rpc Delete(Id) returns(Empty);
+}

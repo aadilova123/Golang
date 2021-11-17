@@ -4,24 +4,26 @@ import (
 	"context"
 	"hw7/internal/models"
 )
-
 type Store interface {
-	Bags() BagsRepository
-	Bracelets() BraceletsRepository
+	Connect(url string) error
+	Close() error
+
+	Categories() CategoriesRepository
+	Goods() GoodsRepository
 }
 
-type BagsRepository interface {
-	Create(ctx context.Context, bag *models.Bag) error
-	All(ctx context.Context) ([]*models.Bag, error)
-	ByID(ctx context.Context, id int) (*models.Bag, error)
-	Update(ctx context.Context, bag *models.Bag) error
+type CategoriesRepository interface {
+	Create(ctx context.Context, category *models.Category) error
+	All(ctx context.Context) ([]*models.Category, error)
+	ByID(ctx context.Context, id int) (*models.Category, error)
+	Update(ctx context.Context, category *models.Category) error
 	Delete(ctx context.Context, id int) error
 }
 
-type BraceletsRepository interface {
-	Create(ctx context.Context, bracelet *models.Bracelet) error
-	All(ctx context.Context) ([]*models.Bracelet, error)
-	ByID(ctx context.Context, id int) (*models.Bracelet, error)
-	Update(ctx context.Context, bracelet *models.Bracelet) error
+type GoodsRepository interface {
+	Create(ctx context.Context, good *models.Good) error
+	All(ctx context.Context) ([]*models.Good, error)
+	ByID(ctx context.Context, id int) (*models.Good, error)
+	Update(ctx context.Context, good *models.Good) error
 	Delete(ctx context.Context, id int) error
 }

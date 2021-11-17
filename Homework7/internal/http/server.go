@@ -10,9 +10,10 @@ import (
 	"net/http"
 	"strconv"
 	"time"
-
 	"github.com/go-chi/chi"
 	"github.com/go-chi/render"
+	"github.com/go-ozzo/ozzo-validation/v4"
+	
 )
 
 type Server struct {
@@ -40,114 +41,90 @@ func (s *Server) basicHandler() chi.Router {
 	// сущность/идентификатор
 	// /accesories/bags
 	// /accesories/bracelets
-	r.Post("/accesories/bags", func(w http.ResponseWriter, r *http.Request) {
-		bag := new(models.Bag)
-		if err := json.NewDecoder(r.Body).Decode(bag); err != nil {
+	r.Post("/categories", func(w http.ResponseWriter, r *http.Request) {
+		category := new(models.Category)
+		if err := json.NewDecoder(r.Body).Decode(category); err != nil {
+			w.WriteHeader(http.StatusUnprocessableEntity)
 			fmt.Fprintf(w, "Unknown err: %v", err)
 			return
 		}
 
-		s.store.Bags().Create(r.Context(), bag)
+		if err := s.store.Categories().Create(r.Context(), category); err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			fmt.Fprintf(w, "DB err: %v", err)
+			return
+		}
+
+		w.WriteHeader(http.StatusCreated)
 	})
-	r.Get("/accesories/bags", func(w http.ResponseWriter, r *http.Request) {
-		bags, err := s.store.Bags().All(r.Context())
+	r.Get("/categories", func(w http.ResponseWriter, r *http.Request) {
+		categories, err := s.store.Categories().All(r.Context())
 		if err != nil {
-			fmt.Fprintf(w, "Unknown err: %v", err)
+			w.WriteHeader(http.StatusInternalServerError)
+			fmt.Fprintf(w, "DB err: %v", err)
 			return
 		}
 
-		render.JSON(w, r, bags)
+		render.JSON(w, r, categories)
 	})
-	r.Get("/accesories/bags/{id}", func(w http.ResponseWriter, r *http.Request) {
+	r.Get("/categories/{id}", func(w http.ResponseWriter, r *http.Request) {
 		idStr := chi.URLParam(r, "id")
 		id, err := strconv.Atoi(idStr)
 		if err != nil {
+			w.WriteHeader(http.StatusBadRequest)
 			fmt.Fprintf(w, "Unknown err: %v", err)
 			return
 		}
 
-		bag, err := s.store.Bags().ByID(r.Context(), id)
+		category, err := s.store.Categories().ByID(r.Context(), id)
 		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			fmt.Fprintf(w, "DB err: %v", err)
+			return
+		}
+
+		render.JSON(w, r, category)
+	})
+	r.Put("/categories", func(w http.ResponseWriter, r *http.Request) {
+		category := new(models.Category)
+		if err := json.NewDecoder(r.Body).Decode(category); err != nil {
+			w.WriteHeader(http.StatusUnprocessableEntity)
 			fmt.Fprintf(w, "Unknown err: %v", err)
 			return
 		}
 
-		render.JSON(w, r, bag)
-	})
-	r.Put("/accesories/bags", func(w http.ResponseWriter, r *http.Request) {
-		bag := new(models.Bag)
-		if err := json.NewDecoder(r.Body).Decode(bag); err != nil {
+		err := validation.ValidateStruct(
+			category,
+			validation.Field(&category.ID, validation.Required),
+			validation.Field(&category.Name, validation.Required),
+		)
+		if err != nil {
+			w.WriteHeader(http.StatusUnprocessableEntity)
 			fmt.Fprintf(w, "Unknown err: %v", err)
 			return
 		}
 
-		s.store.Bags().Update(r.Context(), bag)
+		if err := s.store.Categories().Update(r.Context(), category); err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			fmt.Fprintf(w, "DB err: %v", err)
+			return
+		}
 	})
-	r.Delete("/accesories/bags/{id}", func(w http.ResponseWriter, r *http.Request) {
+	r.Delete("/categories/{id}", func(w http.ResponseWriter, r *http.Request) {
 		idStr := chi.URLParam(r, "id")
 		id, err := strconv.Atoi(idStr)
 		if err != nil {
+			w.WriteHeader(http.StatusBadRequest)
 			fmt.Fprintf(w, "Unknown err: %v", err)
 			return
 		}
 
-		s.store.Bags().Delete(r.Context(), id)
-	})
-	//Bracelet
-	
-	r.Get("/accesories/bracelets", func(w http.ResponseWriter, r *http.Request) {
-		bracelets, err := s.store.Bracelets().All(r.Context())
-		if err != nil {
-			fmt.Fprintf(w, "Unknown err: %v", err)
+		if err := s.store.Categories().Delete(r.Context(), id); err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			fmt.Fprintf(w, "DB err: %v", err)
 			return
 		}
-
-		render.JSON(w, r, bracelets)
 	})
-	r.Get("/accesories/bracelets/{id}", func(w http.ResponseWriter, r *http.Request) {
-		idStr := chi.URLParam(r, "id")
-		id, err := strconv.Atoi(idStr)
-		if err != nil {
-			fmt.Fprintf(w, "Unknown err: %v", err)
-			return
-		}
-
-		bracelet, err := s.store.Bracelets().ByID(r.Context(), id)
-		if err != nil {
-			fmt.Fprintf(w, "Unknown err: %v", err)
-			return
-		}
-
-		render.JSON(w, r, bracelet)
-	})
-	
-	r.Delete("/accesories/bracelets/{id}", func(w http.ResponseWriter, r *http.Request) {
-		idStr := chi.URLParam(r, "id")
-		id, err := strconv.Atoi(idStr)
-		if err != nil {
-			fmt.Fprintf(w, "Unknown err: %v", err)
-			return
-		}
-
-		s.store.Bracelets().Delete(r.Context(), id)
-	})
-	r.Post("/accesories/bracelets", func(w http.ResponseWriter, r *http.Request) {
-		bracelet := new(models.Bracelet)
-		if err := json.NewDecoder(r.Body).Decode(bracelet); err != nil {
-			fmt.Fprintf(w, "Unknown err: %v", err)
-			return
-		}
-		s.store.Bracelets().Create(r.Context(), bracelet)
-	})
-	r.Put("/bracelets", func(w http.ResponseWriter, r *http.Request) {
-		bracelet := new(models.Bracelet)
-		if err := json.NewDecoder(r.Body).Decode(bracelet); err != nil {
-			fmt.Fprintf(w, "Unknown err: %v", err)
-			return
-		}
-		s.store.Bracelets().Update(r.Context(), bracelet)
-	})
-	
 	
 	return r
 }

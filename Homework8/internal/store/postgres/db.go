@@ -3,14 +3,13 @@ package postgres
 import (
 	_ "github.com/jackc/pgx/stdlib"
 	"github.com/jmoiron/sqlx"
-
 	"hw8/internal/store"
 )
 
 type DB struct {
 	conn *sqlx.DB
 
-	reciepts      store.AccesoriesRepository
+	goods      store.GoodsRepository
 	categories store.CategoriesRepository
 }
 

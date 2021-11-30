@@ -2,29 +2,29 @@ package postgres
 
 import (
 	"context"
+	"github.com/jmoiron/sqlx"
 	"hw8/internal/models"
 	"hw8/internal/store"
-
-	"github.com/jmoiron/sqlx"
 )
 
-func (db *DB) Reciepts() store.AccesoriesRepository {
-	if db.Reciepts() == nil {
-		db.reciepts = NewAccesoriesRepository(db.conn)
+func (db *DB) Goods() store.GoodsRepository {
+	if db.goods == nil {
+		db.goods = NewGoodsRepository(db.conn)
 	}
-	return db.reciepts
+
+	return db.goods
 }
 
-type AccesoriesRepository struct {
+type GoodsRepository struct {
 	conn *sqlx.DB
 }
 
-func NewAccesoriesRepository(conn *sqlx.DB) store.AccesoriesRepository {
-	return &AccesoriesRepository{conn: conn}
+func NewGoodsRepository(conn *sqlx.DB) store.GoodsRepository {
+	return &GoodsRepository{conn: conn}
 }
 
-func (c AccesoriesRepository) Create(ctx context.Context, reciept *models.Accesory) error {
-	_, err := c.conn.Exec("INSERT INTO accesories(name, category_id, brand, material) VALUES ($1, $2, $3, $4)", reciept.Name, reciept.CategoryID, reciept.Brand, reciept.Material)
+func (c GoodsRepository) Create(ctx context.Context, category *models.Good) error {
+	_, err := c.conn.Exec("INSERT INTO goods(name) VALUES ($1)", category.Name)
 	if err != nil {
 		return err
 	}
@@ -32,26 +32,26 @@ func (c AccesoriesRepository) Create(ctx context.Context, reciept *models.Acceso
 	return nil
 }
 
-func (c AccesoriesRepository) All(ctx context.Context) ([]*models.Accesory, error) {
-	reciepts := make([]*models.Accesory, 0)
-	if err := c.conn.Select(&reciepts, "SELECT * FROM reciepts"); err != nil {
+func (c GoodsRepository) All(ctx context.Context) ([]*models.Good, error) {
+	goods := make([]*models.Good, 0)
+	if err := c.conn.Select(&goods, "SELECT * FROM goods"); err != nil {
 		return nil, err
 	}
 
-	return reciepts, nil
+	return goods, nil
 }
 
-func (c AccesoriesRepository) ByID(ctx context.Context, id int) (*models.Accesory, error) {
-	reciept := new(models.Accesory)
-	if err := c.conn.Get(reciept, "SELECT * FROM categories WHERE id=$1", id); err != nil {
+func (c GoodsRepository) ByID(ctx context.Context, id int) (*models.Good, error) {
+	good := new(models.Good)
+	if err := c.conn.Get(good, "SELECT id, name FROM goods WHERE id=$1", id); err != nil {
 		return nil, err
 	}
 
-	return reciept, nil
+	return good, nil
 }
 
-func (c AccesoriesRepository) Update(ctx context.Context, reciept *models.Accesory) error {
-	_, err := c.conn.Exec("UPDATE jobs SET name = $1, brand = $2, material = $3  WHERE id = $4", reciept.Name, reciept.Brand, reciept.Material, reciept.ID)
+func (c GoodsRepository) Update(ctx context.Context, category *models.Good) error {
+	_, err := c.conn.Exec("UPDATE goods SET name = $1 WHERE id = $2", category.Name, category.ID)
 	if err != nil {
 		return err
 	}
@@ -59,8 +59,8 @@ func (c AccesoriesRepository) Update(ctx context.Context, reciept *models.Acceso
 	return nil
 }
 
-func (c AccesoriesRepository) Delete(ctx context.Context, id int) error {
-	_, err := c.conn.Exec("DELETE FROM accesories WHERE id = $1", id)
+func (c GoodsRepository) Delete(ctx context.Context, id int) error {
+	_, err := c.conn.Exec("DELETE FROM goods WHERE id = $1", id)
 	if err != nil {
 		return err
 	}

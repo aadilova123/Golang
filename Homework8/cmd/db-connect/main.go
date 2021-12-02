@@ -8,12 +8,18 @@ import (
 
 func main() {
 	ctx := context.Background()
-	urlExample := "postgres://localhost:5432/goods"
+	// postgres://postgres:mypassword@localhost:5432/postgres
+	urlExample := "postgres://postgres:postgres@localhost:5432/goods"
 	conn, err := pgx.Connect(ctx, urlExample)
 	if err != nil {
 		panic(err)
 	}
-	defer conn.Close(context.Background())
+	defer func(conn *pgx.Conn, ctx context.Context) {
+		err := conn.Close(ctx)
+		if err != nil {
+
+		}
+	}(conn, context.Background())
 
 	if err := conn.Ping(ctx); err != nil {
 		panic(err)

@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	urlExample := "postgres://localhost:5432/goods"
+	urlExample := "postgres://postgres:postgres@localhost:5432/goods"
 	store := postgres.NewDB()
 	if err := store.Connect(urlExample); err != nil {
 		panic(err)

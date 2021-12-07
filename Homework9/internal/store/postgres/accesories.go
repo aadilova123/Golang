@@ -2,17 +2,17 @@ package postgres
 
 import (
 	"context"
+	"github.com/jmoiron/sqlx"
 	"hw8/internal/models"
 	"hw8/internal/store"
-
-	"github.com/jmoiron/sqlx"
 )
 
 func (db *DB) Accesories() store.AccesoriesRepository {
-	if db.Accesories() == nil {
-		db.reciepts = NewAccesoriesRepository(db.conn)
+	if db.goods == nil {
+		db.goods = NewAccesoriesRepository(db.conn)
 	}
-	return db.reciepts
+
+	return db.goods
 }
 
 type AccesoriesRepository struct {
@@ -24,7 +24,7 @@ func NewAccesoriesRepository(conn *sqlx.DB) store.AccesoriesRepository {
 }
 
 func (c AccesoriesRepository) Create(ctx context.Context, reciept *models.Accesory) error {
-	_, err := c.conn.Exec("INSERT INTO accesories(name, category_id, brand, material) VALUES ($1, $2, $3, $4)", reciept.Name, reciept.CategoryID, reciept.Brand, reciept.Material)
+	_, err := c.conn.Exec("INSERT INTO goods(name, category_id) VALUES ($1, $2)", reciept.Name, reciept.CategoryID)
 	if err != nil {
 		return err
 	}
@@ -34,7 +34,7 @@ func (c AccesoriesRepository) Create(ctx context.Context, reciept *models.Acceso
 
 func (c AccesoriesRepository) All(ctx context.Context) ([]*models.Accesory, error) {
 	reciepts := make([]*models.Accesory, 0)
-	if err := c.conn.Select(&reciepts, "SELECT * FROM reciepts"); err != nil {
+	if err := c.conn.Select(&reciepts, "SELECT * FROM goods"); err != nil {
 		return nil, err
 	}
 
@@ -43,7 +43,7 @@ func (c AccesoriesRepository) All(ctx context.Context) ([]*models.Accesory, erro
 
 func (c AccesoriesRepository) ByID(ctx context.Context, id int) (*models.Accesory, error) {
 	reciept := new(models.Accesory)
-	if err := c.conn.Get(reciept, "SELECT * FROM categories WHERE id=$1", id); err != nil {
+	if err := c.conn.Get(reciept, "SELECT * FROM goods WHERE id=$1", id); err != nil {
 		return nil, err
 	}
 
@@ -51,7 +51,7 @@ func (c AccesoriesRepository) ByID(ctx context.Context, id int) (*models.Accesor
 }
 
 func (c AccesoriesRepository) Update(ctx context.Context, reciept *models.Accesory) error {
-	_, err := c.conn.Exec("UPDATE jobs SET name = $1, brand = $2, material = $3  WHERE id = $4", reciept.Name, reciept.Brand, reciept.Material, reciept.ID)
+	_, err := c.conn.Exec("UPDATE goods SET name = $1  WHERE id = $4", reciept.Name, reciept.ID)
 	if err != nil {
 		return err
 	}
@@ -60,7 +60,7 @@ func (c AccesoriesRepository) Update(ctx context.Context, reciept *models.Acceso
 }
 
 func (c AccesoriesRepository) Delete(ctx context.Context, id int) error {
-	_, err := c.conn.Exec("DELETE FROM accesories WHERE id = $1", id)
+	_, err := c.conn.Exec("DELETE FROM goods WHERE id = $1", id)
 	if err != nil {
 		return err
 	}

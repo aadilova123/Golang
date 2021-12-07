@@ -13,13 +13,7 @@ type Store interface {
 	Accesories() AccesoriesRepository
 }
 
-type CategoriesRepository interface {
-	Create(ctx context.Context, category *models.Category) error
-	All(ctx context.Context) ([]*models.Category, error)
-	ByID(ctx context.Context, id int) (*models.Category, error)
-	Update(ctx context.Context, category *models.Category) error
-	Delete(ctx context.Context, id int) error
-}
+
 
 type AccesoriesRepository interface {
 	Create(ctx context.Context, good *models.Accesory) error
@@ -28,3 +22,11 @@ type AccesoriesRepository interface {
 	Update(ctx context.Context, good *models.Accesory) error
 	Delete(ctx context.Context, id int) error
 }
+type CategoriesRepository interface {
+	Create(ctx context.Context, category *models.Category) error
+	All(ctx context.Context, filter *models.CategoriesFilter) ([]*models.Category, error)
+	ByID(ctx context.Context, id int) (*models.Category, error)
+	Update(ctx context.Context, category *models.Category) error
+	Delete(ctx context.Context, id int) error
+}
+

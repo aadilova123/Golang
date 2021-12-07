@@ -3,7 +3,7 @@ package main
 import (
 	"context"
 	"hw7/internal/http"
-	"hw7/internal/store/inmemory"
+	"hw8/internal/store/postgres"
 	"log"
 )
 

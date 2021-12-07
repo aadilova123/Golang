@@ -10,7 +10,7 @@ import (
 type DB struct {
 	conn *sqlx.DB
 
-	reciepts      store.AccesoriesRepository
+	goods      store.AccesoriesRepository
 	categories store.CategoriesRepository
 }
 

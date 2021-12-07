@@ -16,7 +16,7 @@ func main() {
 	ctx, cancel := context.WithCancel(context.Background())
 	go CatchTermination(cancel)
 
-	dbURL := "postgres://postgres:postgres@localhost:5432/postgres"
+	dbURL := "postgres://postgres:postgres@localhost:5432/goods"
 	store := postgres.NewDB()
 	if err := store.Connect(dbURL); err != nil {
 		panic(err)

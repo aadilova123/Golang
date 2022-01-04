@@ -11,7 +11,7 @@ type Accesory struct {
 	SIZE    string `json:"size" db:"size"`
 	Color  string `json:"color" db:"color"`
 	Price float64 `json:"price" db:"price"`
-	CategoryID string `json:"category_id" db:"category_id"`
+	CategoryID int `json:"category_id" db:"category_id"`
 }
 
 

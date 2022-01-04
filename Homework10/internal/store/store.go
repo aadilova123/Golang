@@ -15,8 +15,9 @@ type Store interface {
 
 type AccesoriesRepository interface {
 	Create(ctx context.Context, good *models.Accesory) error
-	All(ctx context.Context) ([]*models.Accesory, error)
+	All(ctx context.Context, filter *models.AccesoryFilter) ([]*models.Accesory, error)
 	ByID(ctx context.Context, id int) (*models.Accesory, error)
+	ByCategoryID(ctx context.Context, id int) (*models.Accesory, error)
 	Update(ctx context.Context, good *models.Accesory) error
 	Delete(ctx context.Context, id int) error
 }

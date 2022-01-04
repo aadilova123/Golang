@@ -40,6 +40,9 @@ func (s *Server) basicHandler() chi.Router {
 	categoriesResource := NewCategoryResource(s.store, s.broker, s.cache)
 	r.Mount("/categories", categoriesResource.Routes())
 
+	accesoriesResource := NewAccesoryResource(s.store, s.broker, s.cache)
+	r.Mount("/goods", accesoriesResource.Routes())
+
 	return r
 }
 

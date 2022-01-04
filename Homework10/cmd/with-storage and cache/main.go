@@ -37,7 +37,7 @@ func main() {
 
 	srv := http.NewServer(
 		ctx,
-		http.WithAddress(":8080"),
+		http.WithAddress(":8081"),
 		http.WithStore(store),
 		http.WithCache(cache),
 		http.WithBroker(broker),
